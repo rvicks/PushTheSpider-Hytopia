@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sherlock's Notebook</title>
+    <link rel="stylesheet" href="{{CDN_ASSETS_URL}}/ui/notebook.css">
+</head>
+<body>
+    <div class="notebook">
+        <div class="notebook-header">
+            <h1>Sherlock's Notebook</h1>
+            <p class="subtitle">Case: S.I.N. - Sentient Intelligence Nexus</p>
+        </div>
+        
+        <div class="entries-container">
+            <div id="entries-list"></div>
+        </div>
+        
+        <div class="notebook-footer">
+            <p>Press 'ESC' to close</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to update notebook entries
+        function updateNotebookEntries(entries) {
+            const entriesContainer = document.getElementById('entries-list');
+            entriesContainer.innerHTML = '';
+            
+            if (entries.length === 0) {
+                entriesContainer.innerHTML = '<div class="empty-state">No clues discovered yet.</div>';
+                return;
+            }
+            
+            entries.forEach(entry => {
+                const entryElement = document.createElement('div');
+                entryElement.className = 'entry';
+                
+                entryElement.innerHTML = `
+                    <div class="entry-header">
+                        <h3>${entry.title}</h3>
+                        <span class="timestamp">${entry.timestamp}</span>
+                    </div>
+                    <div class="entry-content">
+                        <p>${entry.content}</p>
+                    </div>
+                `;
+                
+                entriesContainer.appendChild(entryElement);
+            });
+        }
+        
+        // Close notebook when ESC is pressed
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.closeUI();
+            }
+        });
+    </script>
+</body>
+</html> 

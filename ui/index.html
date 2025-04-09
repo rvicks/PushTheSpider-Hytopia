@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.I.N. Game UI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            display: block;
+            pointer-events: none;
+        }
+
+        #interaction-prompt {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: none;
+            pointer-events: none;
+        }
+
+        #notebook {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            pointer-events: none;
+        }
+
+        #notebook h3 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        #notebook-entries {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #notebook-entries li {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        #notebook-entries li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple UI elements -->
+    <div id="crosshair">+</div>
+    <div id="interaction-prompt">Press E</div>
+    <div id="notebook">
+    <h3>Notebook</h3>
+    <ul id="notebook-entries"></ul>
+</div>
+
+<script>
+    // Initialize UI state
+    console.log("UI Initializing...");
+
+    // Handle data from the server
+    if (typeof hytopia !== 'undefined') {
+        console.log("Hytopia framework detected, setting up UI handlers");
+
+        // Setup data handler
+    hytopia.onData(data => {
+            console.log("UI Received Data:", JSON.stringify(data));
+
+            // Handle notebook updates - multiple formats
+
+            // Format 1: Legacy format with notebook array
+            if (data && data.notebook && Array.isArray(data.notebook)) {
+                console.log("Received notebook update in legacy format");
+                updateNotebook(data.notebook);
+
+                // Check if we also have showNotebook flag
+                if (typeof data.showNotebook === 'boolean') {
+                    const notebookDiv = document.getElementById('notebook');
+                    if (notebookDiv) {
+                        notebookDiv.style.display = data.showNotebook ? 'block' : 'none';
+                        console.log(`Notebook visibility set to ${data.showNotebook ? 'visible' : 'hidden'} (legacy format)`);
+                    }
+                }
+            }
+
+            // Format 2: Type-based format for notebook entries
+            if (data && data.type === 'update_notebook' && Array.isArray(data.entries)) {
+                console.log("Received notebook update in type-based format");
+                updateNotebook(data.entries);
+            }
+
+            // Format 3: Show notebook command
+            if (data && data.type === 'show_notebook') {
+                console.log("Received show_notebook command");
+                const notebookDiv = document.getElementById('notebook');
+                if (notebookDiv) {
+                    notebookDiv.style.display = data.show ? 'block' : 'none';
+                    console.log(`Notebook visibility set to ${data.show ? 'visible' : 'hidden'} (show_notebook format)`);
+                }
+            }
+
+            // Format 4: Combined notebook update
+            if (data && data.type === 'notebook') {
+                console.log("Received combined notebook update");
+                if (Array.isArray(data.entries)) {
+                    updateNotebook(data.entries);
+                }
+                if (typeof data.show === 'boolean') {
+                    const notebookDiv = document.getElementById('notebook');
+                    if (notebookDiv) {
+                        notebookDiv.style.display = data.show ? 'block' : 'none';
+                        console.log(`Notebook visibility set to ${data.show ? 'visible' : 'hidden'} (combined format)`);
+                    }
+                }
+            }
+
+            // Handle interaction prompt - multiple formats
+
+            // Format 1: Using showInteractionPrompt property
+            if (data && typeof data.showInteractionPrompt === 'boolean') {
+                console.log("Received interaction prompt in property format");
+                toggleInteractionPrompt(data.showInteractionPrompt, data.text);
+            }
+
+            // Format 2: Using type: 'interaction_prompt'
+            if (data && data.type === 'interaction_prompt') {
+                console.log("Received interaction prompt in type-based format");
+                toggleInteractionPrompt(data.show, data.text);
+            }
+
+            // Format 3: Using type: 'showInteractionPrompt'
+            if (data && data.type === 'showInteractionPrompt') {
+                console.log("Received interaction prompt in hybrid format");
+                toggleInteractionPrompt(data.show, data.text);
+            }
+        });
+
+        // Send a status update to the server to confirm UI loaded
+        try {
+            console.log("UI loaded - sending status update to server");
+            hytopia.sendData({ status: "ui_loaded", timestamp: new Date().toISOString() });
+        } catch (error) {
+            console.error("Error sending UI loaded status:", error);
+        }
+    } else {
+        console.warn("Hytopia framework not found - UI will be in view-only mode");
+    }
+
+    // Add keyboard event listeners with enhanced logging and handling
+    document.addEventListener('keydown', function(event) {
+        console.log('Key pressed in UI:', event.key, 'KeyCode:', event.keyCode, 'Code:', event.code);
+
+        // B key for notebook toggle (keyCode 66 = B)
+        if (event.key === 'b' || event.key === 'B' || event.keyCode === 66) {
+            console.log('B key pressed in UI - toggling notebook');
+            const notebookDiv = document.getElementById('notebook');
+            if (notebookDiv) {
+                const isVisible = notebookDiv.style.display === 'block';
+                notebookDiv.style.display = isVisible ? 'none' : 'block';
+                console.log(`Toggled notebook to ${!isVisible ? 'visible' : 'hidden'} from UI keyboard event`);
+
+                // Send message back to server
+                if (typeof hytopia !== 'undefined') {
+                    console.log('Sending notebook_toggled message to server');
+                    hytopia.sendData({
+                        type: 'notebook_toggled',
+                        visible: !isVisible,
+                        source: 'ui_keyboard_event'
+                    });
+                }
+            } else {
+                console.error('Notebook div not found in DOM!');
+            }
+        }
+
+        // E key for interaction (keyCode 69 = E)
+        if (event.key === 'e' || event.key === 'E' || event.keyCode === 69) {
+            console.log('E key pressed in UI - attempting interaction');
+
+            // Send message back to server
+            if (typeof hytopia !== 'undefined') {
+                console.log('Sending interaction_key_pressed message to server');
+                hytopia.sendData({
+                    type: 'interaction_key_pressed',
+                    source: 'ui_keyboard_event'
+                });
+            }
+        }
+    });
+
+    // Utility functions
+    function updateNotebook(entries) {
+        console.log(`updateNotebook called with ${entries ? entries.length : 0} entries`);
+
+            const notebookDiv = document.getElementById('notebook');
+            const notebookEntries = document.getElementById('notebook-entries');
+
+        if (!notebookDiv || !notebookEntries) {
+            console.error('Notebook elements not found in DOM!');
+            return;
+        }
+
+        // Clear current entries
+            notebookEntries.innerHTML = '';
+        console.log('Cleared existing notebook entries');
+
+        // Add new entries
+        if (entries && entries.length > 0) {
+            console.log(`Adding ${entries.length} entries to notebook`);
+            entries.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.textContent = entry;
+                notebookEntries.appendChild(li);
+                console.log(`Added entry ${index + 1}: "${entry}"`);
+            });
+
+            // Don't automatically show the notebook - let the show_notebook command handle that
+            // notebookDiv.style.display = 'block';
+            console.log('Notebook entries updated successfully');
+        } else {
+            console.log('No entries to display in notebook');
+            // Don't automatically hide the notebook - let the show_notebook command handle that
+            // notebookDiv.style.display = 'none';
+        }
+    }
+
+    function toggleInteractionPrompt(show, text) {
+        console.log(`toggleInteractionPrompt called with show=${show}, text="${text || 'Press E'}"`);
+
+        const promptElement = document.getElementById('interaction-prompt');
+        if (promptElement) {
+            // Set default text if none provided
+            const displayText = text || 'Press E';
+
+            // Update the element
+            promptElement.style.display = show ? 'block' : 'none';
+            promptElement.textContent = displayText;
+
+            console.log(`Interaction prompt ${show ? 'shown' : 'hidden'} with text: "${displayText}"`);
+        } else {
+            console.error('Interaction prompt element not found in DOM!');
+        }
+    }
+</script> 
+</body>
+</html>

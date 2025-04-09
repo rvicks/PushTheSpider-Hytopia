@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Hytopia Sherlock Game Code Guidelines
+
+## World Generation
+- Use `createBakerStreetMap` as the core for procedural map generation.
+- Add new rooms by defining dimensions and positions inside `createBakerStreetMap`.
+- Rooms must be enclosed with floor, walls, and ceilings using the `ChunkLattice`.
+
+## Entity Spawning
+- Use `populateBakerStreetMap` to place entities like furniture or clue objects.
+- Entities are loaded from assets directory: `/assets/models/props/`
+- Use `EntityManager.spawn()` with a named GLB model and position vector.
+
+## Puzzle Clue Triggers
+- Interactable puzzle objects (e.g. magnifying glass, locked drawer) must call `player.ui.sendData({ notebook: [...] })`.
+- Use raycasting or proximity detection inside a system named `PuzzleTriggerSystem`.
+- Trigger clues only once per player unless marked as repeatable.
+
+## Notebook UI
+- Client-side HTML file is located at `/ui/index.html`.
+- Show the notebook when new clues are added.
+- Send clues as a `notebook` array from the server using `player.ui.sendData()`.
+
+## AI Dialogue
+- Dialogue is stored in JSON files under `/data/dialogue/`.
+- Each line follows this structure:
+  ```json
+  {
+    "personality": "Loki",
+    "condition": "wrong_answer",
+    "line": "Wrong again, Sherlock. Are you even trying?"
+  }

@@ -1,0 +1,17 @@
+index-BaC7KwkV.js:3988 Starting HYTOPIA heartbeat
+index-BaC7KwkV.js:3988 Couldn't find HYTOPIA auth token in query params - you are likely connected to a dev server, in which case you can ignore this.
+(anonymous) @ index-BaC7KwkV.js:3988
+(anonymous) @ index-BaC7KwkV.js:3997
+Fte @ index-BaC7KwkV.js:3997
+(anonymous) @ index-BaC7KwkV.js:3997
+embedded-wallets-e7ae0e963f9883e7.js:1 Warning!
+embedded-wallets-e7ae0e963f9883e7.js:1 You are reading this message because you opened the browser console, a developer tool. Do not enter or paste code you do not understand. Never share your tokens or any other info with anyone. If someone told you to do this, it is very likely a scam.
+index-BaC7KwkV.js:3988 UI script loaded successfully
+index-BaC7KwkV.js:3988 Found interaction prompt element
+console.js:36 Download the Apollo DevTools for a better development experience: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+play/:1 The resource https://hytopia.com/assets/icon-DuDNZLtD.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+index-BaC7KwkV.js:3988 Document clicked, requesting pointer lock...
+index-BaC7KwkV.js:3988 Pointer unlocked.
+index-BaC7KwkV.js:3988 Pointer locked successfully.
+play/:1 The resource https://hytopia.com/assets/icon-DuDNZLtD.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+index-BaC7KwkV.js:3988 Pointer unlocked.

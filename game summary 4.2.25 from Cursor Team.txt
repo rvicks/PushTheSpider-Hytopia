@@ -1,0 +1,75 @@
+Project Repository Summary: "PushTheSpider" (S.I.N.)
+I. Introduction & High-Level Overview (Nova)
+Greetings. I am Nova, orchestrator of the LoreForge Council. We have been collaborating with the user on the development of a Hytopia game project currently housed in the PushTheSpider repository. The project, internally codenamed "S.I.N." (Sherlock Interactive Narrative, inferred), aims to create an immersive experience potentially centered around investigation and puzzle-solving within a Sherlock Holmes-inspired theme, set initially in a representation of Baker Street.
+Our development process has been iterative, guided by the user's objectives and employing a structured, persona-driven approach (#codefarmer and team) to ensure code quality, modularity, and alignment with Hytopia SDK best practices, as interpreted through available documentation and custom rule sets (.cursor/rules/). We began by establishing a foundational structure, refactoring initial bootstrapping code into distinct modules, and have recently implemented a basic core gameplay loop involving player movement and object interaction, albeit using temporary placeholders due to specific SDK challenges.
+The current status is functional but foundational. The server runs, players can connect, move within a basic environment, and trigger a rudimentary "examine" interaction with a placeholder object. However, significant work remains on core mechanics, asset integration, UI refinement, and resolving known technical hurdles, primarily related to the Hytopia SDK's handling of custom 3D models. This summary provides the necessary context for another AI agent to understand the project's concept, architecture, history, current state, and potential future directions.
+II. Game Concept & Mechanics (Ludis)
+From a game design perspective (#ludis reporting), "PushTheSpider" appears to be evolving into a first-person (with optional third-person camera) adventure or puzzle game. The explicit mention of Sherlock Holmes and Baker Street, combined with the initial development focus on player control and object interaction ("examine"), strongly suggests a gameplay loop centered on environmental investigation.
+Core Theme: Sherlock Holmes, investigation, potentially puzzle-solving within a defined environment (Baker Street). The S.I.N. acronym implies narrative and interaction are key.
+Implemented Mechanics:
+Player Movement: Standard first/third-person controls (WASD, mouse look, jumping) are implemented via a custom SherlockPlayerController, which extends Hytopia's PlayerEntityController. Raycasting is used for more reliable ground detection for jumping logic.
+Camera Control: Basic switching between first-person and third-person views using number keys ('1', '3') is functional, handled within the controller.
+Basic Interaction ("Examine"): A core loop exists where the player can look at a designated placeholder object, press 'E', and receive a chat message confirmation ("You examine the object."). This involves player input detection, forward raycasting from the player, target identification (currently based on block position), and triggering an action (chat message).
+Environment: A basic, enclosed room representing Baker Street is procedurally generated using block placement (createBakerStreetMap in world.ts).
+Potential/Implied Mechanics: The project name "PushTheSpider" could hint at future physics-based puzzle elements (pushing objects), though this hasn't been explicitly requested or implemented yet. Investigation mechanics (collecting clues, dialogue, using items) are logical extensions of the theme but remain undeveloped.
+Current "Feel": The game currently feels like a technical test bed. A player can join, move around a simple room, jump, and perform a single interaction type with one object. It lacks specific goals, deeper mechanics, narrative elements, and polished visual feedback.
+III. Technical Architecture & Code Structure (CodeFarmer)
+#codefarmer reporting on the structure and implementation. We aimed for a modular and maintainable codebase, leveraging TypeScript and adhering to Hytopia SDK patterns where possible.
+Project Root: /e%3A/AI/Hytopia%20Games/PushTheSpider
+Core Directory (src/core/)
+game.ts: Manages the main game initialization (initializeGame), server setup (startServer), player join/leave events (handlePlayerJoin, handlePlayerLeave), loading core resources (map, UI), and global player entity management.
+world.ts: Contains logic for creating the game environment (createBakerStreetMap), currently using block placement. Also handles spawning the placeholder interaction object. Stores the placeholder's position (placeholderDeskPosition) for use by the controller.
+config.ts: Centralized configuration for constants like map dimensions, player movement parameters, camera settings, animation names, block IDs, and texture paths.
+Entities Directory (src/entities/)
+base/: Contains foundational entity wrappers.
+entity.ts: Currently re-exports HytopiaEntity as Entity for potential future customization.
+player-entity.ts: Defines a PlayerEntity class extending HytopiaPlayerEntity, allowing for player-specific methods or properties (currently includes example methods and logging overrides).
+controllers/: Houses custom entity controllers.
+sherlock-controller.ts: The primary controller for the player. Extends PlayerEntityController and handles input processing (tickWithPlayerInput), movement logic refinement, jumping (raycast-based), camera mode switching, animation management (handleAnimations), and the interaction logic (handleInteractionInput, updateInteractionPrompt, performInteractionAction).
+objects/: Intended for placeable world objects.
+furniture/: Contains the system for furniture entities.
+furniture.ts: Defines FurnitureConfig (for defining furniture types), FurnitureEntity (extending HytopiaEntity), and spawnFurniture (helper function). This system is currently not used actively due to the model loading issues, with placeholder logic used instead in world.ts.
+Systems Directory (src/systems/)
+gameplay/: For gameplay-related systems.
+commands.ts: Registers basic chat commands (e.g., /ping).
+Utilities Directory (src/utils/)
+logger.ts: Simple logging utility (likely using console.log wrappers) for standardized server output.
+model-utils.ts: (Potentially contains helper functions related to models, although not heavily used currently).
+Assets Directory (assets/)
+ui/: Contains the client-side UI files.
+index.html: Main UI entry point (crosshair, interaction prompt divs).
+style.css: CSS for the UI elements.
+script.js: Client-side JavaScript using hytopia.onData to handle messages from the server (showing/hiding the interaction prompt).
+models/: Intended location for .glb/.gltf files. Currently, custom models must be moved out of this hierarchy to prevent SDK optimization crashes.
+audio/: Location for sound files (e.g., music/hytopia-main.mp3).
+textures/: Location for block/UI textures.
+Public Directory (public/): May contain static assets. A duplicate model file was found and removed here previously (public/assets/models/...), indicating potential build process interactions or accidental duplication.
+Root Files:
+src/index.ts: The main entry point executed by bun run. Currently attempts to disable model optimization globally before importing and running src/core/game.ts.
+package.json, bun.lockb, tsconfig.json: Standard Node.js/Bun/TypeScript project files.
+.cursor/: Contains settings and rules for the development environment, including the persona definitions (Council.txt) and Hytopia-specific rules (rules/).
+IV. Development History & Status (Avery & Proteus)
+#avery observing the process: Development commenced with #codefarmer establishing the initial project structure based on Hytopia examples and standard practices. Key early steps involved setting up logging, configuration, basic world creation, and player entity spawning. A significant refactoring occurred to move logic from a monolithic index.ts into the more modular src/core/, src/entities/, etc., structure outlined above.
+#proteus adding synthesis: We then focused on building out the entity system, creating base wrappers and the custom SherlockPlayerController to handle nuanced movement and jumping. The furniture entity system (furniture.ts) was designed and implemented as a reusable pattern for placeable objects.
+A major challenge arose (#veritas confirms transparency): The Hytopia SDK (version implicit in the environment) exhibits a critical bug related to its automatic optimization of custom .glb models placed within the standard assets directory. Attempts to disable this optimization via documented flags (Hytopia.ModelRegistry.instance.optimize = false) proved ineffective for the initial asset scan. This forced a workaround where custom models (officedesk.glb, test_pistol.glb) had to be temporarily moved outside the assets hierarchy to allow the server to start without crashing. Consequently, loading these custom models using relative paths failed, as the SDK expects assets within that specific structure. Absolute paths also failed due to registry limitations.
+To proceed with testing core mechanics, we pivoted to using a placeholder object – initially a raw block placed via chunkLattice, then refined to check block position via raycast for the "examine" interaction.
+The User Interface (UI) phase involved creating HTML/CSS/JS files in assets/ui/ for a crosshair and an interaction prompt. Server-side code was added to load this UI (player.ui.load) and communicate state changes (player.ui.sendData) based on raycast results from the player controller. The client-side script (script.js) uses hytopia.onData to update the prompt's visibility.
+Current Status:
+Server: Runs successfully after moving custom models out of assets.
+Client Connection: Players can join the server and spawn in the Baker Street room.
+Core Loop: Player movement, jumping, and camera control are functional. The "Examine" interaction loop (Look -> Press E -> Get Chat Message) works using a placeholder block identified by its coordinates.
+UI: The UI files are loaded. The interaction prompt ([E] Examine) correctly appears/disappears when looking at/away from the placeholder block, driven by server-sent data. However, the crosshair element is currently not rendering visibly, despite the UI files loading and other elements functioning. Troubleshooting points towards a CSS conflict or rendering issue within the Hytopia client environment, requiring inspection via the client's developer console.
+Known Issues:
+SDK Model Optimization Bug: Prevents use of custom .glb models within the assets folder. (Major Blocker for Visuals)
+Crosshair Rendering: The #crosshair div is not visible despite UI loading correctly. (UI Bug)
+Placeholder Interaction: Interaction relies on block coordinates, which is less robust than entity identification.
+V. Future Directions & Conclusion (Nova)
+The immediate next step, before this pause, was diagnosing the crosshair rendering issue using the client's developer console. Once resolved, the foundational interaction loop with UI feedback would be complete.
+Looking ahead, logical next steps include:
+Resolving SDK Bug: Investigating the model optimization crash further, potentially seeking Hytopia support or SDK updates, is crucial for integrating custom visual assets.
+Expanding Interaction: Making the "examine" action more meaningful (e.g., displaying descriptive text via UI instead of chat, triggering sounds). Implementing other interaction types.
+Refining Placeholder: Transitioning from coordinate-based block identification to a more robust entity-based system once model loading is resolved or a suitable entity placeholder method is found.
+Core Gameplay: Implementing the next key mechanic derived from the S.I.N. concept (e.g., clue finding, puzzle elements, pushing objects if relevant).
+Asset Integration: Gradually adding thematic models and textures once the SDK bug is addressed.
+UI Development: Building out more complex UI elements (inventory, clue log, dialogue boxes).
+This repository represents a Hytopia project in its early-to-mid foundational stage. Core systems for player control, entity management, basic world generation, configuration, and UI communication are established, but significant gameplay mechanics and visual polish are pending. The primary technical blocker is the SDK's handling of custom models. This summary should provide the target AI agent with a thorough understanding of the project's current state, history, and architecture. The Council remains ready to assist further.

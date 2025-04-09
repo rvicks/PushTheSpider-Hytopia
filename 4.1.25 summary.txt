@@ -1,0 +1,68 @@
+Project Summary: [Project Name - TBD, currently "Push-the-spider"]
+Date: March 25, 2024
+Prepared For: Investor Group
+Prepared By: LoreForge Narrative Engineering Council (on behalf of the Development Team)
+(Part 1 of 2)
+1. Executive Summary:
+[Project Name] is an immersive puzzle and exploration game built on the Hytopia SDK, designed to engage players through intricate environmental storytelling and deductive reasoning. Inspired by the classic mysteries of Sherlock Holmes, the game centers around a meticulously crafted, dynamic hub world – 221B Baker Street – which serves as both the primary environment and a gateway to interconnected levels or 'cases'. Our core objective is to leverage the Hytopia platform's capabilities to create a deeply atmospheric, interactive experience that rewards observation, logic, and exploration. Development is currently focused on establishing the foundational architecture, including robust map generation systems and the detailed layout of the Baker Street hub world, ensuring a scalable and engaging player experience from the ground up.
+2. Game Concept:
+The central concept revolves around placing the player within a richly detailed virtual representation of 221B Baker Street. This is not merely a static backdrop but a dynamic, evolving space central to the gameplay narrative. Each room within the apartment is envisioned not just as a thematic area but as a potential portal or starting point for distinct 'cases' or levels, embodying different puzzle types, narratives, or challenges.
+Atmosphere & Immersion: Drawing inspiration from the quintessential Victorian-era detective setting, the game prioritizes atmosphere. We aim to create a sense of place that feels authentic and lived-in, encouraging players to scrutinize their surroundings. Visual fidelity, environmental sound design (planned), and interactive elements will combine to make the Baker Street apartment a character in itself.
+Narrative Framework: While specific storylines are in conceptual stages, the Baker Street hub acts as the narrative anchor. Players might receive case briefings here, return to analyze clues, or use specific rooms (like a study or laboratory) for unique gameplay mechanics related to deduction or evidence analysis. The structure allows for episodic content delivery or a larger overarching mystery unfolding within and beyond the apartment walls.
+Target Audience: The game targets players who enjoy puzzle-solving, exploration, narrative-driven experiences, and atmospheric settings. Fans of detective fiction, escape rooms, and immersive simulators represent the core demographic.
+3. Game Theory & Fundamentals:
+The underlying "game theory" of [Project Name] is rooted in principles of observation, information asymmetry, and deductive reasoning, rather than traditional competitive mechanics.
+Information Gathering Loop: Players are presented with an environment rich in potential information. The core loop involves:
+Exploration: Navigating the space to discover interactive points, objects, and environmental details.
+Observation: Carefully examining objects and the environment to identify subtle clues, patterns, or inconsistencies.
+Interaction: Manipulating objects or triggering events to reveal hidden information or progress puzzle states.
+Deduction: Synthesizing gathered information, forming hypotheses, and testing them to solve localized puzzles or contribute to the larger case.
+Player Agency & Pacing: Players drive the pace through their exploratory and deductive efforts. The environment is designed to reward thoroughness and logical thinking. Information is gated not by linear progression alone, but by the player's ability to connect disparate pieces of information discovered within the hub world or associated levels.
+Key Systems & Mechanics:
+World Generation: Leveraging the Hytopia SDK's block and chunk system (ChunkLattice, BlockTypeRegistry), we have implemented a procedural approach to construct the Baker Street layout. This allows for rapid iteration, scalability, and precise control over the environment's structure. Current implementation includes floors, multi-layered walls (internal/external), and ceilings for defined room spaces.
+Entity Management: The Hytopia EntityManager and Entity classes form the basis for all interactive objects and characters (NPCs, potentially the player avatar if not purely first-person). While placeholder entity spawning is currently disabled pending asset availability, the framework (populateBakerStreetMap function) is in place to instantiate and position entities (doors, furniture, interactive props) within the generated map.
+Interaction System (Planned): A future system will handle player interaction with entities and the environment (e.g., opening doors, examining objects, manipulating puzzle elements). This will likely involve raycasting or proximity checks combined with entity state management.
+Player Control: A custom PlayerEntityController (SherlockPlayerController) is implemented, extending the base Hytopia controller to manage player movement, input handling (including custom keybinds like the previously implemented notebook toggle 'N'), and potentially camera perspectives (first/third-person).
+(Part 2 of 2)
+4. Objectives:
+Player objectives operate on multiple levels:
+Micro-Objectives: Interacting with specific objects, solving localized puzzles within a room (e.g., finding a key, deciphering a code), gathering specific pieces of evidence.
+Meso-Objectives: Completing the objectives within a single 'case' or level accessed through the Baker Street hub. This might involve solving a contained mystery, navigating a specific challenge environment, or retrieving a key item.
+Macro-Objectives: Progressing through multiple cases, potentially uncovering an overarching narrative that connects them, fully exploring and unlocking the secrets of the Baker Street hub world, and achieving mastery of the deductive and observational skills required.
+5. Current Status:
+Development has focused on establishing a robust technical foundation and core environmental structure within the Hytopia SDK.
+Map Generation & Layout:
+Successfully implemented the createBakerStreetMap function to procedurally generate the structural layout based on defined dimensions and spawn points.
+The initial Baker Street shell (50x40 blocks) has been constructed, including floors, outer walls, and a base ceiling height.
+The layout has been significantly expanded based on reference imagery and design goals, incorporating distinct room definitions with appropriate dimensions:
+Room 1 (Living/Study): Defined and generated.
+Room 2 (Kitchen/Dining): Defined and generated adjacent to Room 1.
+Bedroom, Kitchen (secondary), and Hallway areas: Structures and ceiling placements defined and implemented, creating a multi-room apartment layout.
+Internal walls separating these key areas are generated, including placeholder gaps intended for doors.
+Ceiling generation logic correctly covers all defined room spaces and fills remaining areas within the outer shell, ensuring a complete enclosure.
+Technical Infrastructure:
+Project utilizes TypeScript and the Hytopia SDK.
+Core game loop structure is set up within startServer in src/index.ts.
+Player spawn logic and event handling (PlayerEvent.JOINED_WORLD, PlayerEvent.LEFT_WORLD) are implemented.
+Custom player controller (SherlockPlayerController) is integrated for handling input.
+Placeholder entity population logic (populateBakerStreetMap) is defined but currently commented out due to the absence of required .glb model assets (door.glb, table.glb, chair.glb). The system correctly identifies the missing assets and prevents server crashes. Code is ready for asset integration.
+Code Quality & Standards: Project structure adheres to standard TypeScript practices. Hytopia-specific rules (via .cursor/rules) are integrated to guide development consistency (e.g., Entity Manager usage, Global Rules).
+6. Next Steps:
+Asset Integration: Acquire or create required 3D models (.glb) for placeholder entities (doors, furniture) and integrate them by updating paths in populateBakerStreetMap and uncommenting the spawning code.
+Interaction System Implementation: Develop the core system for player interaction with entities and the environment.
+Puzzle Mechanic Prototyping: Begin implementing foundational puzzle mechanics within the established environment.
+UI Refinement: Revisit and refine any necessary UI elements (building on previous notebook UI work if applicable).
+7. Conclusion:
+[Project Name] is progressing steadily, with a strong focus on building a technically sound and extensible foundation using the Hytopia SDK. The successful implementation and expansion of the Baker Street hub world structure demonstrate core competency in map generation and environmental design within the platform. While awaiting asset integration to fully populate the environment, the underlying systems are in place. The project is well-positioned to transition into implementing core gameplay mechanics and interactive elements, moving closer to realizing its vision of an immersive, deduction-based puzzle experience.
+Repository Directory Listing:
+Executing command to list directory structure...
+💠‍🌐 Acknowledged. Here is the directory listing generated from the root of the repository:
+Apply to index.ts
+List of Important Files:
+src/index.ts: The heart of the game server. Contains the main startServer function, world setup, event listeners (player join/leave), map generation (createBakerStreetMap), entity population logic (populateBakerStreetMap), custom classes (SherlockPlayerController), and command registration. This is the most critical file for game logic.
+package.json: Defines project dependencies (like @hytopiagg/sdk), scripts (like start), and project metadata. Essential for installing dependencies and running the server.
+tsconfig.json: Configures the TypeScript compiler, defining how .ts files are translated into JavaScript that the Hytopia runtime can execute.
+assets/ (Directory): Crucial for gameplay. Contains all visual models (.glb), textures (.png), audio files, and potentially map data (.json) required by the game server. The exact structure within assets (e.g., assets/models/props/, assets/textures/blocks/) dictates the paths used in the code.
+.cursor/rules/ (Directory): Contains custom instructions (.mdc files) for the AI assistant (like these Hytopia-specific rules) to ensure consistent and correct code generation according to project standards.
+ui/ (Directory): Contains the HTML, CSS, and JavaScript for any client-side user interfaces loaded via player.ui.load(). (notebook.html is an example).
+HYTOPIA Developer Documentation.txt / .pdf: Local copies of the SDK documentation, used as a reference during development.

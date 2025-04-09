@@ -1,0 +1,23 @@
+{
+  "name": "PushTheSpider",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run --expose-gc --allow-all-ips --http.addr=0.0.0.0 --http.port=8080 src/index.ts",
+    "dev": "bun run --expose-gc --allow-all-ips --http.addr=0.0.0.0 --http.port=8080 src/index.ts",
+    "test-connection": "echo 'Starting the server... Visit https://localhost:8080 first, then connect via https://hytopia.com/play/' && bun run --expose-gc --allow-all-ips --http.addr=0.0.0.0 --http.port=8080 src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@hytopia.com/assets": "^0.2.8",
+    "@types/express": "^5.0.1",
+    "express": "^4.21.2",
+    "hytopia": "^0.3.27"
+  }
+}

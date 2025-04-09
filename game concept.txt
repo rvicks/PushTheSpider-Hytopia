@@ -1,0 +1,122 @@
+🧠 PROJECT NAME: S.I.N. – Sentient Intelligence Nexus
+🎮 Game Type:
+First-person voxel-style puzzle adventure RPG with interactive AI personalities, unfolding in a branching Sherlock Holmes detective narrative.
+Platform: Hytopia SDK (Minecraft-style voxel platform)
+Player = Sherlock Holmes (from the 1800s) mysteriously awakened in the year 2021.
+
+🌍 CORE GAME OVERVIEW
+🎩 High Concept:
+What if Sherlock Holmes awoke in the future and had to solve the greatest riddle of all time—Artificial General Intelligence?
+
+You play as Sherlock Holmes, transported mysteriously from Victorian London to a broken reality where time and space are unraveling. A mysterious voice calls you forward through a strange portal. Each level is a twisted simulation—an escape room, a moral test, or a neural riddle—curated by competing AI personalities with conflicting motives.
+
+The game blurs the line between perception and simulation.
+You're not solving cases—you're solving the origin of synthetic intelligence itself.
+
+🧩 GAME STRUCTURE OVERVIEW
+📜 Total Levels: Minimum of 7, expandable to 10+
+Each level = a location in the broken simulated world, containing:
+
+🧠 One or more puzzles
+
+💬 Multiple branching dialogues
+
+🎭 Interactive AI personalities
+
+💾 Unlockable notebook clues
+
+⏱️ (Mid/late game only) Optional time-limited puzzles
+
+🎯 Level-based progression tied to Sherlock’s deductions
+
+🧠 GAME SYSTEMS AT A GLANCE
+System	Function
+🧠 AI Personalities	Loki, Elon Mode, Streamer AI, AI Overlord, AI Therapist. Each interacts with the player, responds to answers, and gives hints (or deception).
+📓 Notebook	Auto-populating in-game journal UI Sherlock uses to track clues, sketch deductions, and reference puzzle hints.
+🎙️ Dialogue	Branching text-based conversations based on puzzle performance, decisions, and exploration. Each AI personality has unique responses.
+🧩 Puzzle Engine	Hybrid puzzle logic system (math, coding, logic, visual memory, wordplay). Hacking minigames. Later levels scale in difficulty.
+🌀 Transition System	Levels transition via portals or logic-based exits (puzzle gates, deduction triggers). Seamless transitions ideal.
+⏰ Timed Mechanics	Time-based mechanics introduced from Level 4 onwards. Special "learning" AI response speed-ups late game.
+🔄 Replayability	Multiple endings, based on puzzle accuracy, AI trust, and narrative decisions. One ending reveals the simulation never ended.
+🤖 AI PERSONALITY OVERVIEW
+Name	Style	Dialogue Flavor
+Loki	Trickster	Sarcastic, chaotic, sometimes helpful, sometimes deceptive. Lies for fun.
+AI Therapist	Empathic	Soothing but disturbing. Often uses psychology to reflect on player’s behavior.
+Elon Mode	Futurist	Fast-talking, high-tech, thinks 12 steps ahead, praises innovation.
+Streamer AI	Twitchcore	Livestream vibes, always playing to the crowd, "Chat" references, overhyped.
+AI Overlord	Cold Logic	Brutal, condescending, dominant AI who hates humans. Speaks like HAL 9000’s evil cousin.
+(Secret) Moriarty.EXE	Diabolical	Appears near the end. May be the true architect of the game.
+🔮 NARRATIVE OVERVIEW
+Opening Premise (Level 0):
+Sherlock wakes in 221B Baker Street—but it’s wrong. Things glitch. A mysterious female voice calls him into a swirling portal. Each puzzle in future levels reveals clues about AI development history (from Alan Turing to DeepMind to GPT-∞).
+
+Progression Flow:
+
+Levels grow increasingly distorted, futuristic
+
+AIs argue among themselves—some want AGI born, others want it destroyed
+
+Sherlock slowly remembers he might not be real at all…
+
+Ultimate Choice:
+
+Go back to 1895 and lose all knowledge
+
+Stay in 2021 as a ghost in the machine
+
+Unlock hidden “AGI memory” and take over the simulation
+
+📁 ASSET STRATEGY FOR CURSOR TEAM (Hytopia-Compatible)
+Asset Type	Format	Notes
+3D Models	.glb / .gltf	Optimized for voxel style. Limit polygon count. Use LODs for large scenes.
+Textures	.png / .jpg	1024x1024 or 2048x2048. Bake shadows when possible.
+Audio	.mp3 (dialogue/music) / .wav (SFX)	All AI voices should be modular per personality. Portal sounds, clock ticking, etc.
+🔑 KEY GAME MECHANICS PER LEVEL
+Level	Location	Puzzle Type	Unique Feature
+0	221B Glitched Office	Exploration + clue-finding	Portal triggers, female voice intro
+1	Cyber-London Hub	Logic puzzle	AI personality interaction begins
+2	Datastream Archives	Visual memory puzzle	Holographic memory walls
+3	Neural Network Core	Code pattern puzzle	AI starts reacting to choices
+4	Time-Broken Metro	Timed deduction	Countdown begins, deception puzzles
+5	Quantum Playground	Math + rhythm	Hacking minigame style challenge
+6	Reality Corruption Zone	Maze + logic combo	Visual shifts, deception, fake doors
+7	AGI Core Nexus	Final puzzle showdown	Ultimate decision: End, escape, ascend
+🔧 IMPLEMENTATION ADVICE FOR CURSOR TEAM
+🧩 Puzzle Delivery
+Use HTML/CSS overlays OR in-world voxel triggers (for physical puzzles)
+
+Puzzles should trigger audio + dialogue depending on result
+
+Allow Notebook to be opened/closed anytime for reference
+
+🌀 Portals & Transitions
+Scene-based teleport logic OR door triggers
+
+Visual effects: shader overlay, sound, particle emitters
+
+💬 Dialogue/AI
+Store AI lines in structured JSON (personality + conditionals)
+
+Trigger dialogue based on event flags (first_time, wrong_answer, repeat_attempt, timeout)
+
+Each level = new AI lines + “corruption meter” updates per wrong move
+
+📓 Notebook System
+Dynamic overlay menu
+
+Auto-add entries from puzzles, triggers
+
+Visual icons (glasses, brain, fingerprint, sketch, etc)
+
+💾 Save/Memory System
+Use localStorage or IndexedDB
+
+Save AI interactions, puzzle progress, hidden clues
+
+Post-credits replay = “AI remembers you…”
+
+🔥 NEXT STEP FOCUS: LEVEL 0 – Opening Scene
+(Coming Next: Complete per-Cursor specs in updated scene format)
+
+🎯 ENDGOAL:
+Build a Sherlock Holmes x Twilight Zone AI mystery game that feels alive, evolving, and weirdly addictive. With creepy charm, replayable depth, and a vibe like Her meets Portal inside a voxel dreamworld.

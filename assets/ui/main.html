@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sherlock Holmes: S.I.N.</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Times New Roman', serif;
+            background-color: transparent;
+        }
+        
+        /* Crosshair */
+        #crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        #crosshair::before,
+        #crosshair::after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+        }
+        
+        #crosshair::before {
+            width: 2px;
+            height: 20px;
+            left: 9px;
+            top: 0;
+        }
+        
+        #crosshair::after {
+            width: 20px;
+            height: 2px;
+            left: 0;
+            top: 9px;
+        }
+        
+        /* Interaction Prompt */
+        #interaction-prompt {
+            position: fixed;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            display: none;
+            font-size: 16px;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        /* Notebook UI */
+        #notebook {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            height: 80%;
+            max-height: 600px;
+            display: none;
+            z-index: 200;
+        }
+        
+        .notebook-inner {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 234, 214, 0.95);
+            border: 12px solid rgba(101, 67, 33, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .notebook-header {
+            background-color: rgba(101, 67, 33, 0.8);
+            color: #f5e9c9;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 3px solid #3c2312;
+        }
+        
+        .notebook-header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            margin: 5px 0 0;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .entries-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 100% 24px;
+            line-height: 24px;
+        }
+        
+        .entry {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #3c2312;
+            padding-bottom: 10px;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .entry-header h3 {
+            margin: 0;
+            color: #3c2312;
+            font-size: 18px;
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .entry-content p {
+            margin: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 50px;
+        }
+        
+        .notebook-footer {
+            background-color: rgba(101, 67, 33, 0.8);
+            color: #f5e9c9;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* Navigation buttons */
+        .notebook-nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: rgba(101, 67, 33, 0.5);
+        }
+        
+        .nav-button {
+            background-color: #3c2312;
+            color: #f5e9c9;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .nav-button:hover {
+            background-color: #5a3a1f;
+        }
+        
+        .nav-button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Game UI Elements -->
+    <div id="crosshair"></div>
+    <div id="interaction-prompt">Press E to Interact</div>
+    
+    <!-- Notebook UI -->
+    <div id="notebook">
+        <div class="notebook-inner">
+            <div class="notebook-header">
+                <h1>Sherlock's Notebook</h1>
+                <p class="subtitle">Case: S.I.N. - Sentient Intelligence Nexus</p>
+            </div>
+            
+            <div class="notebook-nav">
+                <button id="prev-page" class="nav-button">Previous Page</button>
+                <button id="close-notebook" class="nav-button">Close Notebook</button>
+                <button id="next-page" class="nav-button">Next Page</button>
+            </div>
+            
+            <div class="entries-container">
+                <div id="entries-list"></div>
+            </div>
+            
+            <div class="notebook-footer">
+                <p>Press 'ESC' or 'B' to close</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Debug: log when the script loads
+        console.log("UI script loaded successfully");
+        
+        // Store UI elements for reuse
+        const interactionPrompt = document.getElementById('interaction-prompt');
+        const notebook = document.getElementById('notebook');
+        const entriesList = document.getElementById('entries-list');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const closeNotebookBtn = document.getElementById('close-notebook');
+        
+        // Notebook state
+        let currentPageIndex = 0;
+        const entriesPerPage = 5;
+        let notebookEntries = [];
+        
+        // Initialize UI
+        if (notebook) notebook.style.display = 'none';
+        if (interactionPrompt) interactionPrompt.style.display = 'none';
+        
+        // Render notebook entries
+        function renderNotebookPage(pageIndex) {
+            if (!entriesList) {
+                console.error('Entries list element not found!');
+                return;
+            }
+            
+            console.log(`Rendering notebook page ${pageIndex}. Total entries: ${notebookEntries.length}`);
+            
+            // Clear previous entries
+            entriesList.innerHTML = '';
+            
+            // Calculate page range
+            const startIndex = pageIndex * entriesPerPage;
+            const endIndex = Math.min(startIndex + entriesPerPage, notebookEntries.length);
+            const pageEntries = notebookEntries.slice(startIndex, endIndex);
+            
+            console.log(`Showing entries ${startIndex} to ${endIndex-1}`);
+            
+            // Display entries or empty state
+            if (pageEntries.length > 0) {
+                pageEntries.forEach((entry, index) => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'entry';
+                    
+                    // Check if entry is a string or an object
+                    if (typeof entry === 'string') {
+                        entryElement.innerHTML = `
+                            <div class="entry-header">
+                                <h3>Clue #${startIndex + index + 1}</h3>
+                                <span class="timestamp">Date: Unknown</span>
+                            </div>
+                            <div class="entry-content">
+                                <p>${entry}</p>
+                            </div>
+                        `;
+                    } else {
+                        // Assume it's an object with title, content, and timestamp
+                        entryElement.innerHTML = `
+                            <div class="entry-header">
+                                <h3>${entry.title || `Clue #${startIndex + index + 1}`}</h3>
+                                <span class="timestamp">${entry.timestamp || 'Date: Unknown'}</span>
+                            </div>
+                            <div class="entry-content">
+                                <p>${entry.content || entry}</p>
+                            </div>
+                        `;
+                    }
+                    
+                    entriesList.appendChild(entryElement);
+                    console.log(`Added entry: ${typeof entry === 'string' ? entry : JSON.stringify(entry)}`);
+                });
+            } else {
+                entriesList.innerHTML = '<div class="empty-state">No clues discovered yet.</div>';
+                console.log('Showing empty state - no entries');
+            }
+            
+            // Update navigation buttons
+            if (prevPageBtn) prevPageBtn.disabled = pageIndex <= 0;
+            if (nextPageBtn) nextPageBtn.disabled = endIndex >= notebookEntries.length;
+        }
+        
+        // Handle page navigation
+        function changePage(direction) {
+            const maxPageIndex = Math.max(0, Math.ceil(notebookEntries.length / entriesPerPage) - 1);
+            const newPageIndex = Math.max(0, Math.min(currentPageIndex + direction, maxPageIndex));
+            
+            if (newPageIndex !== currentPageIndex) {
+                currentPageIndex = newPageIndex;
+                renderNotebookPage(currentPageIndex);
+                console.log(`Changed to page ${currentPageIndex}`);
+            }
+        }
+        
+        // Set up event listeners
+        if (prevPageBtn) {
+            prevPageBtn.addEventListener('click', () => changePage(-1));
+        }
+        
+        if (nextPageBtn) {
+            nextPageBtn.addEventListener('click', () => changePage(1));
+        }
+        
+        if (closeNotebookBtn) {
+            closeNotebookBtn.addEventListener('click', () => {
+                notebook.style.display = 'none';
+                console.log('Notebook closed via button');
+                
+                // Send message to game that notebook was closed
+                sendToGame({
+                    type: 'notebook_closed',
+                    action: 'user_closed'
+                });
+            });
+        }
+        
+        // Handle keyboard events
+        document.addEventListener('keydown', (event) => {
+            // ESC key to close notebook
+            if (event.key === 'Escape' && notebook.style.display !== 'none') {
+                notebook.style.display = 'none';
+                console.log('Notebook closed via ESC key');
+                
+                // Send message to game that notebook was closed
+                sendToGame({
+                    type: 'notebook_closed',
+                    action: 'user_closed'
+                });
+            }
+            
+            // B key to toggle notebook
+            if (event.key === 'b' || event.key === 'B') {
+                console.log('B key pressed in UI');
+                toggleNotebook();
+            }
+            
+            // Page navigation with PageUp/PageDown when notebook is open
+            if (notebook.style.display !== 'none') {
+                if (event.key === 'PageUp') {
+                    event.preventDefault();
+                    changePage(-1);
+                }
+                if (event.key === 'PageDown') {
+                    event.preventDefault();
+                    changePage(1);
+                }
+            }
+        });
+        
+        // Toggle notebook visibility
+        function toggleNotebook() {
+            const isVisible = notebook.style.display !== 'none';
+            notebook.style.display = isVisible ? 'none' : 'block';
+            console.log(`Notebook toggled to ${!isVisible ? 'visible' : 'hidden'}`);
+            
+            if (!isVisible) {
+                // Reset to first page when opening
+                currentPageIndex = 0;
+                renderNotebookPage(currentPageIndex);
+            }
+        }
+        
+        // Function to send data back to the game
+        function sendToGame(data) {
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({
+                    type: 'hytopia:uiscript:action',
+                    data: data
+                }, '*');
+                console.log('Sent message to game:', data);
+            } else {
+                console.warn('Cannot send message to game - window.parent not available');
+            }
+        }
+        
+        // Listen for messages from the game
+        window.addEventListener('message', (event) => {
+            console.log('Received message:', event.data);
+            
+            // Check if it's a Hytopia message
+            if (event.data && event.data.type === 'hytopia:uiscript:data' && event.data.data) {
+                const payload = event.data.data;
+                console.log('Processing payload:', payload);
+                
+                // Handle interaction prompt
+                if (payload.type === 'interaction_prompt' || payload.type === 'showInteractionPrompt') {
+                    if (payload.show) {
+                        interactionPrompt.style.display = 'block';
+                        interactionPrompt.textContent = payload.text || 'Press E to Interact';
+                        console.log('Showing interaction prompt:', payload.text);
+                    } else {
+                        interactionPrompt.style.display = 'none';
+                        console.log('Hiding interaction prompt');
+                    }
+                }
+                
+                // Handle notebook updates
+                if (payload.type === 'update_notebook') {
+                    console.log('Updating notebook entries:', payload.entries);
+                    notebookEntries = Array.isArray(payload.entries) ? payload.entries : [];
+                    
+                    // If notebook is visible, re-render current page
+                    if (notebook.style.display !== 'none') {
+                        renderNotebookPage(currentPageIndex);
+                    }
+                }
+                
+                // Handle notebook visibility toggle
+                if (payload.type === 'show_notebook') {
+                    console.log('Setting notebook visibility:', payload.show);
+                    notebook.style.display = payload.show ? 'block' : 'none';
+                    
+                    if (payload.show) {
+                        // Reset to first page when opening
+                        currentPageIndex = 0;
+                        renderNotebookPage(currentPageIndex);
+                    }
+                }
+            }
+        });
+        
+        // Send ready message to game
+        console.log('UI initialization complete, sending ready message');
+        sendToGame({
+            type: 'ui_ready',
+            timestamp: new Date().toISOString()
+        });
+    </script>
+</body>
+</html>

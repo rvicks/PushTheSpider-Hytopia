@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sherlock</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        
+        #crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+        
+        #crosshair::before,
+        #crosshair::after {
+            content: "";
+            position: absolute;
+            background-color: white;
+        }
+        
+        #crosshair::before {
+            width: 2px;
+            height: 20px;
+            left: 9px;
+            top: 0;
+        }
+        
+        #crosshair::after {
+            width: 20px;
+            height: 2px;
+            left: 0;
+            top: 9px;
+        }
+        
+        #interact-prompt {
+            position: fixed;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="crosshair"></div>
+    <div id="interact-prompt">[E] Examine</div>
+
+    <script>
+        // Debug: log when the script loads
+        console.log("UI script loaded successfully");
+        
+        // Store the interaction prompt element for reuse
+        const interactPrompt = document.getElementById('interact-prompt');
+        if (interactPrompt) {
+            console.log("Found interaction prompt element");
+        } else {
+            console.error("Could not find interaction prompt element");
+        }
+        
+        // Listen for messages from the server
+        window.addEventListener('message', function(event) {
+            console.log("Received message from server:", event.data);
+            const data = event.data;
+            
+            // Handle interaction_prompt type messages
+            if (data && data.type === 'interaction_prompt') {
+                console.log("Got interaction_prompt message:", data);
+                
+                if (data.show) {
+                    console.log("Showing interaction prompt with text:", data.text);
+                    interactPrompt.style.display = 'block';
+                    interactPrompt.textContent = data.text || '[E] Examine';
+                } else {
+                    console.log("Hiding interaction prompt");
+                    interactPrompt.style.display = 'none';
+                }
+            }
+            
+            // Old message type for backward compatibility
+            if (data && data.type === 'showInteractionPrompt') {
+                console.log("Got legacy showInteractionPrompt message:", data);
+                
+                if (data.show) {
+                    interactPrompt.style.display = 'block';
+                    interactPrompt.textContent = data.text || '[E] Examine';
+                } else {
+                    interactPrompt.style.display = 'none';
+                }
+            }
+            
+            // --- Handle Pointer Lock Request --- 
+            if (data && data.type === 'request_pointer_lock') {
+                console.log("Received request_pointer_lock from server");
+                document.body.requestPointerLock();
+            }
+            // -----------------------------------
+        });
+        
+        // Add listener to trigger pointer lock on click (if not already locked)
+        document.addEventListener('click', () => {
+            if (document.pointerLockElement !== document.body) {
+                console.log("Document clicked, requesting pointer lock...");
+                document.body.requestPointerLock();
+            }
+        });
+        
+        // Log pointer lock changes
+        document.addEventListener('pointerlockchange', () => {
+            if (document.pointerLockElement === document.body) {
+                console.log('Pointer locked successfully.');
+            } else {
+                console.log('Pointer unlocked.');
+            }
+        });
+        
+        // Log pointer lock errors
+        document.addEventListener('pointerlockerror', (err) => {
+            console.error('Pointer lock failed: ', err);
+        });
+    </script>
+</body>
+</html>

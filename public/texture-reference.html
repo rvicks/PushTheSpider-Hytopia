@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Texture Reference</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .texture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .texture-sample {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .texture-sample img {
+      width: 100%;
+      height: auto;
+      max-width: 64px;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .tips {
+      background-color: #fffde7;
+      padding: 15px;
+      border-left: 4px solid #ffd600;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hytopia Texture Reference</h1>
+  
+  <div class="tips">
+    <h2>Troubleshooting Tips</h2>
+    <p><strong>Camera Issues:</strong> Press F5 to switch between first-person and third-person views. Press ESC to ensure game focus.</p>
+    <p><strong>Missing Textures:</strong> If textures are missing, verify they exist in both <code>assets/blocks/</code> and <code>public/blocks/</code> directories.</p>
+    <p><strong>Player Movement:</strong> Click in the game window and use WASD to move. If not working, press ESC, then click in the game again.</p>
+  </div>
+  
+  <h2>Common Block Types</h2>
+  <p>These are some of the common block types used in the game:</p>
+  
+  <div class="texture-grid">
+    <div class="texture-sample">
+      <img src="blocks/dirt.png" alt="Dirt" />
+      <div>Dirt</div>
+    </div>
+    <div class="texture-sample">
+      <img src="blocks/grass/+y.png" alt="Grass Top" />
+      <div>Grass (Top)</div>
+    </div>
+    <div class="texture-sample">
+      <img src="blocks/stone.png" alt="Stone" />
+      <div>Stone</div>
+    </div>
+    <div class="texture-sample">
+      <img src="blocks/bricks.png" alt="Bricks" />
+      <div>Bricks</div>
+    </div>
+    <div class="texture-sample">
+      <img src="blocks/wood.png" alt="Wood" />
+      <div>Wood</div>
+    </div>
+    <div class="texture-sample">
+      <img src="blocks/glass.png" alt="Glass" />
+      <div>Glass</div>
+    </div>
+  </div>
+  
+  <h2>File Path Requirements</h2>
+  <p>For proper texture loading:</p>
+  <ul>
+    <li>Single-texture blocks: <code>public/blocks/[blockname].png</code></li>
+    <li>Multi-texture blocks: <code>public/blocks/[blockname]/[face].png</code> where face is <code>+x</code>, <code>-x</code>, <code>+y</code>, <code>-y</code>, <code>+z</code>, <code>-z</code></li>
+    <li>All paths in <code>map.json</code> should use the format <code>blocks/[filename]</code> without <code>./</code> or <code>assets/</code> prefixes</li>
+  </ul>
+  
+  <h2>Known Issues</h2>
+  <p>Some blocks may have corrupted texture paths in the map definition. The server tries to fix these automatically, but you may need to manually update your textures.</p>
+  
+  <footer>
+    <p><small>Reference guide for Push-the-spider project. For more help, check the Hytopia documentation.</small></p>
+  </footer>
+</body>
+</html> 
